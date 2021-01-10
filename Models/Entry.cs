@@ -8,20 +8,15 @@ using System.Threading.Tasks;
 
 namespace TestApplicatif.Models
 {
-    [Table("Entry")]
     public class Entry
     {
         #region Propriétés
 
-        [Column("Id")]
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Column("Code")]
         public string Code { get; set; }
 
-        [Column("Name")]
         public string Name { get; set; }
 
         #endregion

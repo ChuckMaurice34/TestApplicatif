@@ -108,7 +108,7 @@ namespace TestApplicatif.ViewModels
         {
             using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
             {
-                var query = from acc in context.Account
+                var query = from acc in context.Accounts
                             join led in context.Ledger on acc.Id equals led.AccountId
                             group new { led.Amount } by new { acc.Name, led.Amount } into g
                             select new { val1 = g.Key.Name, val2 = Math.Abs(g.Key.Amount) };
@@ -132,7 +132,7 @@ namespace TestApplicatif.ViewModels
             using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
             {
                 var query = context.Ledger
-                            .Join(context.Account, led => led.AccountId, acc => acc.Id, (led, acc) => new { led, acc })
+                            .Join(context.Accounts, led => led.AccountId, acc => acc.Id, (led, acc) => new { led, acc })
                             .GroupBy(grp => new { grp.acc.Name, grp.led.EntryId })
                             .Select(n => new
                             {

@@ -16,8 +16,8 @@ namespace TestApplicatif.Models
         {
         }
 
-        public DbSet<Account> Account { get; set; }
-        public new DbSet<Entry> Entry { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Entry> Entries { get; set; }
         public DbSet<Ledger> Ledger { get; set; }
 
     }
