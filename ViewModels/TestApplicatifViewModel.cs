@@ -108,6 +108,8 @@ namespace TestApplicatif.ViewModels
         {
             using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
             {
+                //ApplicationDbContext context = new ApplicationDbContext(new SQLiteConnection() { ConnectionString = "Data Source=BDD/BaseTest.db" });
+
                 var query = from acc in context.Accounts
                             join led in context.Ledger on acc.Id equals led.AccountId
                             group new { led.Amount } by new { acc.Name, led.Amount } into g
@@ -131,6 +133,8 @@ namespace TestApplicatif.ViewModels
         {
             using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
             {
+                //ApplicationDbContext context = new ApplicationDbContext(new SQLiteConnection() { ConnectionString = "Data Source=BDD/BaseTest.db" });
+
                 var query = context.Ledger
                             .Join(context.Accounts, led => led.AccountId, acc => acc.Id, (led, acc) => new { led, acc })
                             .GroupBy(grp => new { grp.acc.Name, grp.led.EntryId })
