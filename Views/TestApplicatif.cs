@@ -7,7 +7,7 @@ using TestApplicatif.ViewModels;
 
 namespace TestApplicatif.Views
 {
-    class TestApplicatif
+    public class TestApplicatif
     {
         #region Constructeurs
 

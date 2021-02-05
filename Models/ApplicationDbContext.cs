@@ -40,7 +40,7 @@ namespace TestApplicatif.Models
     public class ApplicationDbContextFactory : IDbContextFactory<ApplicationDbContext>
     {
 
-        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["BaseTest"].ConnectionString;
+        private static readonly string connectionString = ConfigurationManager.ConnectionStrings["DataBase"].ConnectionString;
         private readonly ApplicationDbContext m_dbContext = new ApplicationDbContext(connectionString);
 
         public ApplicationDbContext Create()

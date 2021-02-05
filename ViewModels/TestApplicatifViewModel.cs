@@ -7,7 +7,7 @@ using TestApplicatif.Models;
 
 namespace TestApplicatif.ViewModels
 {
-    class TestApplicatifViewModel : ModelBase
+    public class TestApplicatifViewModel : ModelBase
     {
         #region Variables
 
@@ -15,6 +15,8 @@ namespace TestApplicatif.ViewModels
         private Account _account;
         private Entry _entry;
         private Ledger _ledger;
+        bool _isTest;
+        bool _isTestOk;
 
         #endregion
 
@@ -64,6 +66,28 @@ namespace TestApplicatif.ViewModels
             }
         }
 
+        public bool IsTest
+        {
+            get { return _isTest; }
+            set
+            {
+                if (_isTest == value) return;
+                _isTest = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsTestOk
+        {
+            get { return _isTestOk; }
+            set
+            {
+                if (_isTestOk == value) return;
+                _isTestOk = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Constructeurs
@@ -104,16 +128,20 @@ namespace TestApplicatif.ViewModels
         #region Méthodes privées
 
         // Méthode 1 : Linq to SQL
-        private void Linq()
+        public void Linq()
         {
-            using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
+            if (IsTest == true)
             {
-                //ApplicationDbContext context = new ApplicationDbContext(new SQLiteConnection() { ConnectionString = "Data Source=BDD/BaseTest.db" });
+                IsTestOk = true;
+                return;
+            }
 
+            using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
+            {       
                 var query = from acc in context.Accounts
                             join led in context.Ledger on acc.Id equals led.AccountId
                             group new { led.Amount } by new { acc.Name, led.Amount } into g
-                            select new { val1 = g.Key.Name, val2 = Math.Abs(g.Key.Amount) };
+                            select new { val1 = g.Key.Name, val2 = /*Math.Abs*/(g.Key.Amount) };
 
                 if (query != null)
                 {
@@ -131,10 +159,14 @@ namespace TestApplicatif.ViewModels
         // Méthode 2 : Expression Lambda
         private void Lambda()
         {
+            if (IsTest == true)
+            {
+                IsTestOk = true;
+                return;
+            }
+
             using (ApplicationDbContext context = new ApplicationDbContextFactory().Create())
             {
-                //ApplicationDbContext context = new ApplicationDbContext(new SQLiteConnection() { ConnectionString = "Data Source=BDD/BaseTest.db" });
-
                 var query = context.Ledger
                             .Join(context.Accounts, led => led.AccountId, acc => acc.Id, (led, acc) => new { led, acc })
                             .GroupBy(grp => new { grp.acc.Name, grp.led.EntryId })
@@ -160,13 +192,19 @@ namespace TestApplicatif.ViewModels
         // Méthode 3 : SQL
         private void Sql()
         {
-            using (var connection = new SQLiteConnection(@"Data Source=BDD/BaseTest.db"))
+            if (IsTest == true)
+            {
+                IsTestOk = true;
+                return;
+            }
+
+            using (var connection = new SQLiteConnection(@"Data Source=D:\\Development\\DB\\BaseTest.db"))
             {
                 // Méthode 1 (pour comparatif perf.) :
                 using (var command = connection.CreateCommand())
                 {
                     connection.Open();
-                    //command.CommandText = "SELECT Name, SUM(CASE WHEN Amount > 0 THEN Amount || ' => KO.U' WHEN Amount < 0 THEN Amount || ' => KO.D' WHEN Amount = 0 THEN Amount || ' => OK' END) AS Total FROM Account, Ledger WHERE Account.Id = Ledger.AccountId GROUP BY Account.Id";
+                    
                     command.CommandText = "SELECT Name, SUM(Amount) as Total, (CASE WHEN SUM(Amount) > 0 THEN ' => KO.U' WHEN  SUM(Amount) < 0 THEN ' => KO.D' ELSE ' => OK' END) AS Mention FROM Account, Ledger WHERE Account.Id = Ledger.AccountId GROUP BY Account.Id";
 
                     using (var reader = command.ExecuteReader())
@@ -206,12 +244,19 @@ namespace TestApplicatif.ViewModels
                     connection.Close();
                 }
             }
+
             View.Menu(false);
         }
 
         // Méthode 4 : Suite de Fibonacci avec paramètre d'entrée
         private void Fibo()
         {
+            if (IsTest == true)
+            {
+                IsTestOk = true;
+                return;
+            }
+
             Console.WriteLine("\nEntrez un nombre :\n");
             var saisie = Console.ReadLine();
             int nombre = 0;

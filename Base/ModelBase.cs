@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TestApplicatif.Base
 {
-    class ModelBase : INotifyPropertyChanged
+    public class ModelBase : INotifyPropertyChanged
     {
         #region Implémentation de l'interface 'INotifyPropertyChanged'
 
